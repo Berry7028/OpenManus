@@ -1,7 +1,7 @@
 # Global LLM configuration
 [llm] #OLLAMA:
 api_type = 'ollama'
-model = "llama3.2"                                                 # The LLM model to use
+model = "qwen2.5:latest"                                                 # The LLM model to use
 base_url = "http://localhost:11434/v1"                             # API endpoint URL
 api_key = "ollama"                                                 # Your API key
 max_tokens = 4096                                                  # Maximum number of tokens in the response
@@ -10,7 +10,7 @@ temperature = 0.0                                                  # Controls ra
 
 [llm.vision] #OLLAMA VISION:
 api_type = 'ollama'
-model = "llama3.2-vision"                                          # The vision model to use
+model = "qwen2.5:latest-vision"                                          # The vision model to use
 base_url = "http://localhost:11434/v1"                             # API endpoint URL for vision model
 api_key = "ollama"                                                 # Your API key for vision model
 max_tokens = 4096                                                  # Maximum number of tokens in the response
