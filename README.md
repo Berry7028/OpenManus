@@ -13,7 +13,7 @@ English | [中文](README_zh.md) | [한국어](README_ko.md) | [日本語](READM
 
 # 👋 OpenManus
 
-Manus is incredible, but OpenManus can achieve any idea without an _Invite Code_ 🛫!
+Manus is incredible, but OpenManus can achieve any idea without an *Invite Code* 🛫!
 
 Our team members [@Xinbin Liang](https://github.com/mannaandpoem) and [@Jinyu Xiang](https://github.com/XiangJinyu) (core authors), along with [@Zhaoyang Yu](https://github.com/MoshiQAQ), [@Jiayi Zhang](https://github.com/didiforgithub), and [@Sirui Hong](https://github.com/stellaHSR), we are from [@MetaGPT](https://github.com/geekan/MetaGPT). The prototype is launched within 3 hours and we are keeping building!
 
@@ -84,7 +84,6 @@ uv pip install -r requirements.txt
 ```
 
 ### Browser Automation Tool (Optional)
-
 ```bash
 playwright install
 ```
@@ -128,7 +127,6 @@ python main.py
 Then input your idea via terminal!
 
 For MCP tool version, you can run:
-
 ```bash
 python run_mcp.py
 ```
@@ -148,66 +146,7 @@ Currently, besides the general OpenManus Agent, we have also integrated the Data
 [runflow]
 use_data_analysis_agent = true     # Disabled by default, change to true to activate
 ```
-
 In addition, you need to install the relevant dependencies to ensure the agent runs properly: [Detailed Installation Guide](app/tool/chart_visualization/README.md##Installation)
-
-## 🛠️ Available Tools
-
-OpenManus comes with an extensive collection of 30+ specialized tools organized into categories:
-
-### Core System Tools
-
-- **File Operations**: `create_file`, `append_file`, `replace_in_file`, `delete_file`
-- **Planning**: `planning` for structured task management
-- **Web & Browser**: `web_search`, `browser_use_tool` for web automation
-- **Code Execution**: `python_execute`, `bash` for running code and system commands
-- **Text Processing**: `str_replace_editor`, `diff_editor` for advanced text manipulation
-
-### Database & Data Management
-
-- **`database_manager`**: SQLite operations, queries, schema management, backup/restore
-- **`data_validator`**: Data validation, quality analysis, anomaly detection
-
-### Development & Testing
-
-- **`api_tester`**: REST API testing, load testing, health checks
-- **`test_runner`**: Test execution, coverage analysis, performance testing
-- **`code_formatter`**: Multi-language formatting, linting, style checking
-- **`dependency_checker`**: Package analysis, vulnerability scanning, license checking
-
-### File & Compression Operations
-
-- **`file_compressor`**: Multi-format compression (ZIP, TAR, GZIP, 7Z)
-
-### Network & Security
-
-- **`network_scanner`**: Network diagnostics, port scanning, DNS lookup
-- **`security_scanner`**: Vulnerability scanning, encryption, password checking
-
-### Documentation & Communication
-
-- **`document_generator`**: Automatic documentation, templates, format conversion
-- **`notification_sender`**: Multi-channel notifications (email, Slack, Discord, webhooks)
-
-### System Monitoring & Optimization
-
-- **`performance_benchmark`**: System benchmarking, stress testing
-- **`metrics_collector`**: System metrics, monitoring, alerting
-- **`resource_optimizer`**: System optimization, cleanup, performance tuning
-
-### Backup & Configuration
-
-- **`backup_manager`**: File/directory backup, restore, scheduling
-- **`config_manager`**: Configuration management, environment variables
-- **`environment_manager`**: Development environment setup, package management
-
-### Task Management & Automation
-
-- **`task_scheduler`**: Cron-style scheduling, automation
-- **`workflow_automator`**: Visual workflow creation, task orchestration
-- **`log_rotator`**: Log rotation, compression, cleanup
-
-For detailed usage examples and workflow guides, see [docs/new_tools_guide.md](docs/new_tools_guide.md).
 
 ## How to contribute
 
@@ -218,7 +157,6 @@ Or contact @mannaandpoem via 📧email: mannaandpoem@gmail.com
 **Note**: Before submitting a pull request, please use the pre-commit tool to check your changes. Run `pre-commit run --all-files` to execute the checks.
 
 ## Community Group
-
 Join our networking group on Feishu and share your experience with other developers!
 
 <div align="center" style="display: flex; gap: 20px;">
@@ -230,10 +168,9 @@ Join our networking group on Feishu and share your experience with other develop
 [![Star History Chart](https://api.star-history.com/svg?repos=FoundationAgents/OpenManus&type=Date)](https://star-history.com/#FoundationAgents/OpenManus&Date)
 
 ## Sponsors
-
 Thanks to [PPIO](https://ppinfra.com/user/register?invited_by=OCPKCN&utm_source=github_openmanus&utm_medium=github_readme&utm_campaign=link) for computing source support.
-
 > PPIO: The most affordable and easily-integrated MaaS and GPU cloud solution.
+
 
 ## Acknowledgement
 
@@ -247,7 +184,6 @@ We also thank stepfun(阶跃星辰) for supporting our Hugging Face demo space.
 OpenManus is built by contributors from MetaGPT. Huge thanks to this agent community!
 
 ## Cite
-
 ```bibtex
 @misc{openmanus2025,
   author = {Xinbin Liang and Jinyu Xiang and Zhaoyang Yu and Jiayi Zhang and Sirui Hong and Sheng Fan and Xiao Tang},
