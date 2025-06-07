@@ -13,6 +13,15 @@ from app.tool.browser_use_tool import BrowserUseTool
 from app.tool.mcp import MCPClients, MCPClientTool
 from app.tool.python_execute import PythonExecute
 from app.tool.str_replace_editor import StrReplaceEditor
+from app.tool.planning import PlanningTool
+from app.tool.web_search import WebSearch
+from app.tool.create_chat_completion import CreateChatCompletion
+from app.tool.bash import Bash
+from app.tool.create_file import CreateFile
+from app.tool.append_file import AppendToFile
+from app.tool.replace_in_file import ReplaceInFile
+from app.tool.delete_file import DeleteFile
+from app.tool.diff_editor import DiffEditor
 
 
 class Manus(ToolCallAgent):
@@ -25,7 +34,7 @@ class Manus(ToolCallAgent):
     next_step_prompt: str = NEXT_STEP_PROMPT
 
     max_observe: int = 10000
-    max_steps: int = 20
+    max_steps: int = 200
 
     # MCP clients for remote tool access
     mcp_clients: MCPClients = Field(default_factory=MCPClients)
@@ -38,6 +47,15 @@ class Manus(ToolCallAgent):
             StrReplaceEditor(),
             AskHuman(),
             Terminate(),
+            PlanningTool(),
+            WebSearch(),
+            CreateChatCompletion(),
+            Bash(),
+            CreateFile(),
+            AppendToFile(),
+            ReplaceInFile(),
+            DeleteFile(),
+            DiffEditor(),
         )
     )
 

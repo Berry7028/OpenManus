@@ -16,11 +16,11 @@ PathLike = Union[str, Path]
 class FileOperator(Protocol):
     """Interface for file operations in different environments."""
 
-    async def read_file(self, path: PathLike) -> str:
+    async def read_file(self, path: PathLike, timeout: Optional[float] = None) -> str:
         """Read content from a file."""
         ...
 
-    async def write_file(self, path: PathLike, content: str) -> None:
+    async def write_file(self, path: PathLike, content: str, timeout: Optional[float] = None) -> None:
         """Write content to a file."""
         ...
 
@@ -44,17 +44,30 @@ class LocalFileOperator(FileOperator):
 
     encoding: str = "utf-8"
 
-    async def read_file(self, path: PathLike) -> str:
+    async def read_file(self, path: PathLike, timeout: Optional[float] = None) -> str:
         """Read content from a local file."""
         try:
-            return Path(path).read_text(encoding=self.encoding)
+            loop = asyncio.get_event_loop()
+            coro = loop.run_in_executor(None, lambda: Path(path).read_text(encoding=self.encoding))
+            if timeout:
+                return await asyncio.wait_for(coro, timeout=timeout)
+            return await coro
+        except asyncio.TimeoutError:
+            raise ToolError(f"Read file '{path}' timed out after {timeout} seconds")
         except Exception as e:
             raise ToolError(f"Failed to read {path}: {str(e)}") from None
 
-    async def write_file(self, path: PathLike, content: str) -> None:
+    async def write_file(self, path: PathLike, content: str, timeout: Optional[float] = None) -> None:
         """Write content to a local file."""
         try:
-            Path(path).write_text(content, encoding=self.encoding)
+            loop = asyncio.get_event_loop()
+            coro = loop.run_in_executor(None, lambda: Path(path).write_text(content, encoding=self.encoding))
+            if timeout:
+                await asyncio.wait_for(coro, timeout=timeout)
+            else:
+                await coro
+        except asyncio.TimeoutError:
+            raise ToolError(f"Write file '{path}' timed out after {timeout} seconds")
         except Exception as e:
             raise ToolError(f"Failed to write to {path}: {str(e)}") from None
 
@@ -104,19 +117,28 @@ class SandboxFileOperator(FileOperator):
         if not self.sandbox_client.sandbox:
             await self.sandbox_client.create(config=SandboxSettings())
 
-    async def read_file(self, path: PathLike) -> str:
+    async def read_file(self, path: PathLike, timeout: Optional[float] = None) -> str:
         """Read content from a file in sandbox."""
         await self._ensure_sandbox_initialized()
         try:
+            if timeout:
+                return await asyncio.wait_for(self.sandbox_client.read_file(str(path)), timeout=timeout)
             return await self.sandbox_client.read_file(str(path))
+        except asyncio.TimeoutError:
+            raise ToolError(f"Read file '{path}' in sandbox timed out after {timeout} seconds")
         except Exception as e:
             raise ToolError(f"Failed to read {path} in sandbox: {str(e)}") from None
 
-    async def write_file(self, path: PathLike, content: str) -> None:
+    async def write_file(self, path: PathLike, content: str, timeout: Optional[float] = None) -> None:
         """Write content to a file in sandbox."""
         await self._ensure_sandbox_initialized()
         try:
-            await self.sandbox_client.write_file(str(path), content)
+            if timeout:
+                await asyncio.wait_for(self.sandbox_client.write_file(str(path), content), timeout=timeout)
+            else:
+                await self.sandbox_client.write_file(str(path), content)
+        except asyncio.TimeoutError:
+            raise ToolError(f"Write file '{path}' in sandbox timed out after {timeout} seconds")
         except Exception as e:
             raise ToolError(f"Failed to write to {path} in sandbox: {str(e)}") from None
 

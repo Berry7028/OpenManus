@@ -187,6 +187,11 @@ class WebSearch(BaseTool):
                 "description": "(optional) Whether to fetch full content from result pages. Default is false.",
                 "default": False,
             },
+            "page": {
+                "type": "integer",
+                "description": "(optional) Page number to retrieve results from. Default is 1.",
+                "default": 1,
+            },
         },
         "required": ["query"],
     }
@@ -202,6 +207,7 @@ class WebSearch(BaseTool):
         self,
         query: str,
         num_results: int = 5,
+        page: int = 1,
         lang: Optional[str] = None,
         country: Optional[str] = None,
         fetch_content: bool = False,
@@ -212,6 +218,7 @@ class WebSearch(BaseTool):
         Args:
             query: The search query to submit to the search engine
             num_results: The number of search results to return (default: 5)
+            page: Page number to retrieve results from (default: 1)
             lang: Language code for search results (default from config)
             country: Country code for search results (default from config)
             fetch_content: Whether to fetch content from result pages (default: False)
@@ -250,7 +257,7 @@ class WebSearch(BaseTool):
 
         # Try searching with retries when all engines fail
         for retry_count in range(max_retries + 1):
-            results = await self._try_all_engines(query, num_results, search_params)
+            results = await self._try_all_engines(query, num_results, search_params, page)
 
             if results:
                 # Fetch content if requested
@@ -288,7 +295,7 @@ class WebSearch(BaseTool):
         )
 
     async def _try_all_engines(
-        self, query: str, num_results: int, search_params: Dict[str, Any]
+        self, query: str, num_results: int, search_params: Dict[str, Any], page: int
     ) -> List[SearchResult]:
         """Try all search engines in the configured order."""
         engine_order = self._get_engine_order()
@@ -297,11 +304,24 @@ class WebSearch(BaseTool):
         for engine_name in engine_order:
             engine = self._search_engine[engine_name]
             logger.info(f"🔎 Attempting search with {engine_name.capitalize()}...")
-            search_items = await self._perform_search_with_engine(
-                engine, query, num_results, search_params
-            )
+            # Pagination support: fetch and slice results
+            max_fetch = num_results * page if page > 1 else num_results
+            try:
+                raw_items = await self._perform_search_with_engine(
+                    engine, query, max_fetch, search_params
+                )
+            except Exception as e:
+                logger.error(f"Error searching with {engine_name}: {e}")
+                failed_engines.append(engine_name)
+                continue
+            if page > 1:
+                start_idx = (page - 1) * num_results
+                search_items = raw_items[start_idx : start_idx + num_results]
+            else:
+                search_items = raw_items
 
             if not search_items:
+                failed_engines.append(engine_name)
                 continue
 
             if failed_engines:
