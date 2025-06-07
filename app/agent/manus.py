@@ -23,6 +23,28 @@ from app.tool.replace_in_file import ReplaceInFile
 from app.tool.delete_file import DeleteFile
 from app.tool.diff_editor import DiffEditor
 
+# Import new tools
+from app.tool.database_manager import DatabaseManager
+from app.tool.api_tester import ApiTester
+from app.tool.file_compressor import FileCompressor
+from app.tool.network_scanner import NetworkScanner
+from app.tool.code_formatter import CodeFormatter
+from app.tool.document_generator import DocumentGenerator
+from app.tool.task_scheduler import TaskScheduler
+from app.tool.data_validator import DataValidator
+from app.tool.performance_benchmark import PerformanceBenchmark
+from app.tool.security_scanner import SecurityScanner
+from app.tool.backup_manager import BackupManager
+from app.tool.config_manager import ConfigManager
+from app.tool.log_rotator import LogRotator
+from app.tool.environment_manager import EnvironmentManager
+from app.tool.dependency_checker import DependencyChecker
+from app.tool.test_runner import TestRunner
+from app.tool.metrics_collector import MetricsCollector
+from app.tool.notification_sender import NotificationSender
+from app.tool.workflow_automator import WorkflowAutomator
+from app.tool.resource_optimizer import ResourceOptimizer
+
 
 class Manus(ToolCallAgent):
     """A versatile general-purpose agent with support for both local and MCP tools."""
@@ -42,6 +64,7 @@ class Manus(ToolCallAgent):
     # Add general-purpose tools to the tool collection
     available_tools: ToolCollection = Field(
         default_factory=lambda: ToolCollection(
+            # Core tools
             PythonExecute(),
             BrowserUseTool(),
             StrReplaceEditor(),
@@ -56,6 +79,28 @@ class Manus(ToolCallAgent):
             ReplaceInFile(),
             DeleteFile(),
             DiffEditor(),
+
+            # New comprehensive tools
+            DatabaseManager(),
+            ApiTester(),
+            FileCompressor(),
+            NetworkScanner(),
+            CodeFormatter(),
+            DocumentGenerator(),
+            TaskScheduler(),
+            DataValidator(),
+            PerformanceBenchmark(),
+            SecurityScanner(),
+            BackupManager(),
+            ConfigManager(),
+            LogRotator(),
+            EnvironmentManager(),
+            DependencyChecker(),
+            TestRunner(),
+            MetricsCollector(),
+            NotificationSender(),
+            WorkflowAutomator(),
+            ResourceOptimizer(),
         )
     )
 
