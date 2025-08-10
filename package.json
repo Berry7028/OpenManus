@@ -8,8 +8,9 @@
     "build": "tsc -p tsconfig.json",
     "start": "tsx src/main.ts",
     "start:prompt": "tsx src/main.ts --prompt",
+    "start:flow": "tsx src/run_flow.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
-  },
+  }
   "dependencies": {
     "openai": "^4.56.0",
     "toml": "^3.0.0",
