@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OpenManus TS UI</title>
+    <style>
+      body { font-family: system-ui, -apple-system, sans-serif; margin: 2rem; }
+      textarea, input, select { width: 100%; padding: .5rem; margin: .25rem 0; }
+      button { padding: .5rem 1rem; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+      pre { background: #111; color: #0f0; padding: 1rem; border-radius: .5rem; white-space: pre-wrap; }
+      h2 { margin-top: 2rem; }
+    </style>
+  </head>
+  <body>
+    <h1>OpenManus (TypeScript)</h1>
+
+    <div class="row">
+      <section>
+        <h2>Run Agent</h2>
+        <textarea id="prompt" rows="4" placeholder="Enter your prompt..."></textarea>
+        <button id="runBtn">Run</button>
+        <pre id="runOut"></pre>
+      </section>
+
+      <section>
+        <h2>Run Flow</h2>
+        <textarea id="flowPrompt" rows="4" placeholder="Enter your prompt..."></textarea>
+        <button id="flowBtn">Run Flow</button>
+        <pre id="flowOut"></pre>
+      </section>
+    </div>
+
+    <section>
+      <h2>Tools</h2>
+      <select id="toolSelect"></select>
+      <textarea id="toolArgs" rows="4" placeholder='{"arg":"value"}'></textarea>
+      <button id="toolRunBtn">Run Tool</button>
+      <pre id="toolOut"></pre>
+    </section>
+
+    <script>
+      async function fetchJSON(url, opts) {
+        const r = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...opts });
+        return await r.json();
+      }
+
+      async function loadTools() {
+        const tools = await fetchJSON('/api/tools');
+        const sel = document.getElementById('toolSelect');
+        sel.innerHTML = '';
+        tools.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.name; opt.textContent = `${t.name} - ${t.description || ''}`;
+          sel.appendChild(opt);
+        });
+      }
+
+      document.getElementById('runBtn').onclick = async () => {
+        const prompt = document.getElementById('prompt').value;
+        const out = document.getElementById('runOut'); out.textContent = 'Running...';
+        const res = await fetchJSON('/api/run', { method:'POST', body: JSON.stringify({ prompt }) });
+        out.textContent = res.error ? `Error: ${res.error}` : (res.result || '');
+      };
+
+      document.getElementById('flowBtn').onclick = async () => {
+        const prompt = document.getElementById('flowPrompt').value;
+        const out = document.getElementById('flowOut'); out.textContent = 'Running...';
+        const res = await fetchJSON('/api/flow', { method:'POST', body: JSON.stringify({ prompt }) });
+        out.textContent = res.error ? `Error: ${res.error}` : (res.result || '');
+      };
+
+      document.getElementById('toolRunBtn').onclick = async () => {
+        const name = document.getElementById('toolSelect').value;
+        const argsText = document.getElementById('toolArgs').value || '{}';
+        const out = document.getElementById('toolOut'); out.textContent = 'Running...';
+        try {
+          const args = JSON.parse(argsText);
+          const res = await fetchJSON('/api/tool', { method:'POST', body: JSON.stringify({ name, args }) });
+          out.textContent = res.error ? `Error: ${res.error}` : (res.output || '');
+        } catch (e) {
+          out.textContent = 'Invalid JSON in args';
+        }
+      };
+
+      loadTools();
+    </script>
+  </body>
+</html>
