@@ -3,6 +3,11 @@ import { SYSTEM_PROMPT, NEXT_STEP_PROMPT } from "../prompt/toolcall";
 import { Terminate } from "../tool/terminate";
 import { ToolCollection } from "../tool/toolCollection";
 import { config } from "../config";
+import { PythonExecute } from "../tool/python_execute";
+import { StrReplaceEditor } from "../tool/str_replace_editor";
+import { AskHuman } from "../tool/ask_human";
+import { WebSearch } from "../tool/web_search";
+import { Bash } from "../tool/bash";
 
 export class Manus extends ToolCallAgent {
   name = "Manus";
@@ -14,7 +19,14 @@ export class Manus extends ToolCallAgent {
   max_observe = 10000;
   max_steps = 20;
 
-  available_tools = new ToolCollection(new Terminate());
+  available_tools = new ToolCollection(
+    new PythonExecute(),
+    new WebSearch(),
+    new StrReplaceEditor(),
+    new AskHuman(),
+    new Bash(),
+    new Terminate()
+  );
 
   static async create(): Promise<Manus> {
     // stubbing MCP initialization
