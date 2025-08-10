@@ -1,13 +1,16 @@
-FROM python:3.12-slim
+# Node.js runtime for TypeScript app
+FROM node:22-slim
 
-WORKDIR /app/OpenManus
+WORKDIR /workspace
 
-RUN apt-get update && apt-get install -y --no-install-recommends git curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && (command -v uv >/dev/null 2>&1 || pip install --no-cache-dir uv)
+COPY package.json package-lock.json* tsconfig.json ./
+RUN npm ci || npm i
 
-COPY . .
+COPY src ./src
+COPY public ./public
+COPY config ./config
 
-RUN uv pip install --system -r requirements.txt
+RUN npm run build
 
-CMD ["bash"]
+EXPOSE 3000
+CMD ["npm", "run", "serve"]
